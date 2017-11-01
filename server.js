@@ -196,7 +196,20 @@ function createArticle(url, request) {
 function updateComments(url,request){
   const id = Number(url.split('/').filter(segment => segment)[1])
   const savedComment = database.comments[id];
-  
+  const requestComment = request.body && request.body.comment;
+  const response = {};
+
+  if(!savedComment){
+    response.status=404;
+  }else if(!id || !requestComment){
+    response.status=400
+  }else if(requestComment.body!==''){
+    savedComment.body = requestComment.body;
+
+    response.body = {comment: savedComment};
+    response.status = 200;
+  }
+  return response;
 }
 
 function updateArticle(url, request) {
